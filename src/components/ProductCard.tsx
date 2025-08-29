@@ -38,7 +38,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     const options = [];
     
     if (product.unit === 'piece') {
-      // For pieces: 1, 2, 3, 4, 5
+      // For pieces (GPS trackers): 1, 2, 3, 4, 5
       for (let i = product.minWeight; i <= product.maxWeight; i++) {
         options.push(i);
       }
