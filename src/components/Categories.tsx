@@ -98,6 +98,7 @@ const Categories: React.FC = () => {
           {categories.map((category) => (
             <div
               key={category.id}
+              id={`category-${category.id}`}
               onClick={() => handleCategorySelect(category.id)}
               className="relative bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-700 transform hover:-translate-y-4 hover:shadow-2xl hover:shadow-orange-500/30 cursor-pointer group border border-gray-100 hover:border-orange-300"
             >
