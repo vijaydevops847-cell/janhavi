@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  jahnavi-traders:
+    build: .
+    ports:
+      - "3000:8080"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    volumes:
+      # Mount local images directory for easy updates
+      - ./public/images:/usr/share/nginx/html/public/images:ro
+    networks:
+      - jahnavi-network
+
+networks:
+  jahnavi-network:
+    driver: bridge

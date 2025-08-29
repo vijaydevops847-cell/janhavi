@@ -1,0 +1,35 @@
+This directory contains product images for Jahnavi Traders website.
+
+Place the following images in this directory:
+
+Hero Images:
+- hero-gps.jpg
+- hero-pickles.jpg
+- hero-rotis.jpg
+- hero-millets.jpg
+
+GPS Tracker Images:
+- gps-tracker-1.jpg
+- gps-tracker-2.jpg
+- gps-tracker-3.jpg
+- gps-tracker-4.jpg
+
+Pickle Images:
+- chicken-pickle.jpg
+- mutton-pickle.jpg
+- fish-pickle.jpg
+- prawn-pickle.jpg
+
+Ready to Cook Images:
+- wheat-rotis.jpg
+- millet-chapathis.jpg
+- jowar-rotis.jpg
+- mixed-grain-chapathis.jpg
+
+Millet Images:
+- foxtail-millet.jpg
+- pearl-millet.jpg
+- finger-millet.jpg
+- little-millet.jpg
+- millet-flour.jpg
+- millet-cookies.jpg
