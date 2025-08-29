@@ -22,38 +22,50 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [selectedWeight, setSelectedWeight] = useState(product.minWeight);
 
   const calculatePrice = (weight: number) => {
-    const totalPrice = (product.basePrice * weight).toFixed(0);
-    return `₹${totalPrice}`;
+    let totalPrice;
+    if (product.unit === 'piece') {
+      totalPrice = product.basePrice * weight;
+    } else {
+      // For weight-based products, calculate per gram/kg
+      const weightInKg = product.unit === 'g' ? weight / 1000 : weight;
+      totalPrice = product.basePrice * weightInKg;
+    }
+    return `₹${totalPrice.toFixed(0)}`;
   };
 
-  // Generate weight options based on product unit and steps
+  // Generate weight options based on product type
   const getWeightOptions = () => {
     const options = [];
     
-    if (product.unit === 'kg') {
-      // For kg products: 0.5kg, 1kg, 1.5kg, 2kg, 2.5kg, 3kg, 4kg, 5kg
-      for (let i = 0.5; i <= product.maxWeight; i += 0.5) {
-        options.push(i);
-      }
-    } else if (product.unit === 'g') {
-      // For gram products: 100g, 250g, 500g, 750g, 1000g, etc.
-      const steps = [100, 250, 500];
-      for (let step of steps) {
-        for (let i = step; i <= product.maxWeight; i += step) {
-          if (!options.includes(i)) {
-            options.push(i);
-          }
-        }
-      }
-      options.sort((a, b) => a - b);
-    } else {
+    if (product.unit === 'piece') {
       // For pieces: 1, 2, 3, 4, 5
       for (let i = product.minWeight; i <= product.maxWeight; i++) {
         options.push(i);
       }
+    } else if (product.unit === 'g') {
+      // For gram products: 100g, 250g, 500g, 750g, 1000g, 1500g, 2000g, 2500g, 3000g, 4000g, 5000g
+      const steps = [100, 250, 500];
+      const allOptions = new Set();
+      
+      // Add standard increments
+      for (let step of steps) {
+        for (let i = step; i <= 5000; i += step) {
+          if (i >= 100) {
+            allOptions.add(i);
+          }
+        }
+      }
+      
+      // Convert to sorted array
+      options.push(...Array.from(allOptions).sort((a, b) => a - b));
+    } else if (product.unit === 'kg') {
+      // For kg products: 0.5kg, 1kg, 1.5kg, 2kg, 2.5kg, 3kg, 4kg, 5kg
+      for (let i = 0.5; i <= 5; i += 0.5) {
+        options.push(i);
+      }
     }
     
-    return options.filter(option => option >= product.minWeight && option <= product.maxWeight);
+    return options;
   };
 
   const weightOptions = getWeightOptions();
@@ -101,12 +113,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             Select {product.unit === 'piece' ? 'Quantity' : 'Weight'}
           </label>
           
-          <div className="grid grid-cols-3 gap-2 mb-4">
+          <div className="grid grid-cols-3 gap-2 mb-4 max-h-32 overflow-y-auto">
             {weightOptions.map((weight) => (
               <button
                 key={weight}
                 onClick={() => setSelectedWeight(weight)}
-                className={`py-3 px-4 rounded-lg font-semibold text-sm transition-all duration-300 transform hover:scale-105 ${
+                className={`py-2 px-3 rounded-lg font-semibold text-sm transition-all duration-300 transform hover:scale-105 ${
                   selectedWeight === weight
                     ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg'
                     : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-orange-300 hover:bg-orange-50'
@@ -115,10 +127,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 {formatWeight(weight)}
               </button>
             ))}
-          </div>
-          
-          <div className="text-xs text-gray-500 text-center">
-            Available: {formatWeight(product.minWeight)} - {formatWeight(product.maxWeight)}
           </div>
         </div>
 
