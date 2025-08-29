@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageCircle, Minus, Plus } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 
 interface Product {
   id: number;
@@ -26,28 +26,52 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     return `₹${totalPrice}`;
   };
 
-  const increaseWeight = () => {
-    if (selectedWeight < product.maxWeight) {
-      setSelectedWeight(selectedWeight + product.weightStep);
+  // Generate weight options based on product unit and steps
+  const getWeightOptions = () => {
+    const options = [];
+    
+    if (product.unit === 'kg') {
+      // For kg products: 0.5kg, 1kg, 1.5kg, 2kg, 2.5kg, 3kg, 4kg, 5kg
+      for (let i = 0.5; i <= product.maxWeight; i += 0.5) {
+        options.push(i);
+      }
+    } else if (product.unit === 'g') {
+      // For gram products: 100g, 250g, 500g, 750g, 1000g, etc.
+      const steps = [100, 250, 500];
+      for (let step of steps) {
+        for (let i = step; i <= product.maxWeight; i += step) {
+          if (!options.includes(i)) {
+            options.push(i);
+          }
+        }
+      }
+      options.sort((a, b) => a - b);
+    } else {
+      // For pieces: 1, 2, 3, 4, 5
+      for (let i = product.minWeight; i <= product.maxWeight; i++) {
+        options.push(i);
+      }
     }
+    
+    return options.filter(option => option >= product.minWeight && option <= product.maxWeight);
   };
 
-  const decreaseWeight = () => {
-    if (selectedWeight > product.minWeight) {
-      setSelectedWeight(selectedWeight - product.weightStep);
-    }
-  };
+  const weightOptions = getWeightOptions();
 
-  const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const weight = parseFloat(e.target.value);
-    if (weight >= product.minWeight && weight <= product.maxWeight) {
-      setSelectedWeight(weight);
+  const formatWeight = (weight: number) => {
+    if (product.unit === 'kg') {
+      return weight % 1 === 0 ? `${weight}kg` : `${weight}kg`;
+    } else if (product.unit === 'g') {
+      return weight >= 1000 ? `${weight/1000}kg` : `${weight}g`;
+    } else {
+      return `${weight} ${weight === 1 ? 'piece' : 'pieces'}`;
     }
   };
 
   const handleWhatsAppOrder = () => {
     const finalPrice = calculatePrice(selectedWeight);
-    const message = `Hi! I'd like to order:\n\nProduct: ${product.name}\nWeight: ${selectedWeight}${product.unit}\nTotal Price: ${finalPrice}\n\nPlease confirm availability and delivery details. Thank you!`;
+    const weightDisplay = formatWeight(selectedWeight);
+    const message = `Hi! I'd like to order:\n\nProduct: ${product.name}\nQuantity: ${weightDisplay}\nTotal Price: ${finalPrice}\n\nPlease confirm availability and delivery details. Thank you!`;
     const whatsappUrl = `https://wa.me/${import.meta.env.VITE_WHATSAPP}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -71,42 +95,30 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <h3 className="text-xl font-bold text-gray-800 mb-3 group-hover:text-orange-700 transition-all duration-500 group-hover:scale-105">{product.name}</h3>
         <p className="text-gray-600 mb-4 leading-relaxed group-hover:text-gray-700 transition-colors duration-500">{product.description}</p>
         
-        {/* Weight Selection */}
-        <div className="mb-4 p-4 bg-gray-50 rounded-xl group-hover:bg-white transition-colors duration-500">
+        {/* Weight Selection Buttons */}
+        <div className="mb-6 p-4 bg-gray-50 rounded-xl group-hover:bg-white transition-colors duration-500">
           <label className="block text-sm font-semibold text-gray-700 mb-3">
-            Select Weight ({product.unit})
+            Select {product.unit === 'piece' ? 'Quantity' : 'Weight'}
           </label>
           
-          <div className="flex items-center space-x-4 mb-3">
-            <button
-              onClick={decreaseWeight}
-              disabled={selectedWeight <= product.minWeight}
-              className="w-10 h-10 bg-orange-100 hover:bg-orange-200 disabled:bg-gray-100 disabled:text-gray-400 text-orange-600 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 disabled:hover:scale-100"
-            >
-              <Minus className="h-4 w-4" />
-            </button>
-            
-            <input
-              type="number"
-              value={selectedWeight}
-              onChange={handleWeightChange}
-              min={product.minWeight}
-              max={product.maxWeight}
-              step={product.weightStep}
-              className="flex-1 text-center py-2 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 font-semibold text-lg"
-            />
-            
-            <button
-              onClick={increaseWeight}
-              disabled={selectedWeight >= product.maxWeight}
-              className="w-10 h-10 bg-orange-100 hover:bg-orange-200 disabled:bg-gray-100 disabled:text-gray-400 text-orange-600 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 disabled:hover:scale-100"
-            >
-              <Plus className="h-4 w-4" />
-            </button>
+          <div className="grid grid-cols-3 gap-2 mb-4">
+            {weightOptions.map((weight) => (
+              <button
+                key={weight}
+                onClick={() => setSelectedWeight(weight)}
+                className={`py-3 px-4 rounded-lg font-semibold text-sm transition-all duration-300 transform hover:scale-105 ${
+                  selectedWeight === weight
+                    ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg'
+                    : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-orange-300 hover:bg-orange-50'
+                }`}
+              >
+                {formatWeight(weight)}
+              </button>
+            ))}
           </div>
           
           <div className="text-xs text-gray-500 text-center">
-            Range: {product.minWeight}{product.unit} - {product.maxWeight}{product.unit}
+            Available: {formatWeight(product.minWeight)} - {formatWeight(product.maxWeight)}
           </div>
         </div>
 
@@ -116,7 +128,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               {calculatePrice(selectedWeight)}
             </span>
             <span className="text-gray-500 ml-2 group-hover:text-gray-600 transition-colors duration-500">
-              ({selectedWeight}{product.unit})
+              ({formatWeight(selectedWeight)})
             </span>
           </div>
         </div>
