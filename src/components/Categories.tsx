@@ -10,7 +10,7 @@ const Categories: React.FC = () => {
       id: 'gps',
       title: 'GPS Trackers',
       description: 'Advanced GPS tracking solutions for vehicles with real-time monitoring',
-      icon: <Navigation className="h-16 w-16" />,
+      icon: <Navigation className="h-12 w-12" />,
       image: '/public/images/hero-gps.jpg',
       gradient: 'from-blue-500 to-indigo-600'
     },
@@ -18,7 +18,7 @@ const Categories: React.FC = () => {
       id: 'pickles',
       title: 'Non-Veg Pickles',
       description: 'Authentic homemade non-vegetarian pickles with traditional recipes',
-      icon: <Heart className="h-16 w-16" />,
+      icon: <Heart className="h-12 w-12" />,
       image: '/public/images/hero-pickles.jpg',
       gradient: 'from-red-500 to-pink-600'
     },
@@ -26,7 +26,7 @@ const Categories: React.FC = () => {
       id: 'ready-to-cook',
       title: 'Ready to Cook',
       description: 'Convenient ready-to-cook rotis and chapathis for busy lifestyles',
-      icon: <Truck className="h-16 w-16" />,
+      icon: <Truck className="h-12 w-12" />,
       image: '/public/images/hero-rotis.jpg',
       gradient: 'from-green-500 to-emerald-600'
     },
@@ -34,7 +34,7 @@ const Categories: React.FC = () => {
       id: 'millets',
       title: 'Millets & Products',
       description: 'Premium quality millets and millet-based products for healthy living',
-      icon: <Wheat className="h-16 w-16" />,
+      icon: <Wheat className="h-12 w-12" />,
       image: '/public/images/hero-millets.jpg',
       gradient: 'from-yellow-500 to-orange-600'
     }
@@ -94,7 +94,8 @@ const Categories: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Categories in one horizontal line */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {categories.map((category) => (
             <div
               key={category.id}
@@ -102,7 +103,7 @@ const Categories: React.FC = () => {
               onClick={() => handleCategorySelect(category.id)}
               className="relative bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-700 transform hover:-translate-y-4 hover:shadow-2xl hover:shadow-orange-500/30 cursor-pointer group border border-gray-100 hover:border-orange-300"
             >
-              <div className="relative h-64 overflow-hidden">
+              <div className="relative h-48 overflow-hidden">
                 <img
                   src={category.image}
                   alt={category.title}
@@ -112,10 +113,10 @@ const Categories: React.FC = () => {
                 
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center text-white">
-                    <div className="flex justify-center mb-4 text-white group-hover:text-orange-300 transition-all duration-500 group-hover:scale-110">
+                    <div className="flex justify-center mb-3 text-white group-hover:text-orange-300 transition-all duration-500 group-hover:scale-110">
                       {category.icon}
                     </div>
-                    <h3 className="text-2xl md:text-3xl font-bold mb-2 group-hover:scale-105 transition-transform duration-500">
+                    <h3 className="text-lg md:text-xl font-bold mb-1 group-hover:scale-105 transition-transform duration-500">
                       {category.title}
                     </h3>
                   </div>
@@ -124,17 +125,17 @@ const Categories: React.FC = () => {
                 <div className={`absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r ${category.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`} />
               </div>
               
-              <div className="p-6 group-hover:bg-gradient-to-br group-hover:from-orange-50 group-hover:to-red-50 transition-all duration-500">
-                <p className="text-gray-600 group-hover:text-gray-700 leading-relaxed transition-colors duration-500">
+              <div className="p-4 group-hover:bg-gradient-to-br group-hover:from-orange-50 group-hover:to-red-50 transition-all duration-500">
+                <p className="text-gray-600 group-hover:text-gray-700 leading-relaxed transition-colors duration-500 text-sm">
                   {category.description}
                 </p>
                 
-                <div className="mt-4 flex items-center justify-between">
-                  <span className="text-orange-600 font-semibold group-hover:text-orange-700 transition-colors duration-300">
+                <div className="mt-3 flex items-center justify-between">
+                  <span className="text-orange-600 font-semibold group-hover:text-orange-700 transition-colors duration-300 text-sm">
                     Explore Products
                   </span>
-                  <div className="w-8 h-8 bg-orange-100 group-hover:bg-orange-200 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110">
-                    <span className="text-orange-600 font-bold">→</span>
+                  <div className="w-6 h-6 bg-orange-100 group-hover:bg-orange-200 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                    <span className="text-orange-600 font-bold text-sm">→</span>
                   </div>
                 </div>
               </div>
