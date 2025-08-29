@@ -42,27 +42,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       for (let i = product.minWeight; i <= product.maxWeight; i++) {
         options.push(i);
       }
-    } else if (product.unit === 'g') {
-      // For gram products: 100g, 250g, 500g, 750g, 1000g, 1500g, 2000g, 2500g, 3000g, 4000g, 5000g
-      const steps = [100, 250, 500];
-      const allOptions = new Set();
-      
-      // Add standard increments
-      for (let step of steps) {
-        for (let i = step; i <= 5000; i += step) {
-          if (i >= 100) {
-            allOptions.add(i);
-          }
-        }
-      }
-      
-      // Convert to sorted array
-      options.push(...Array.from(allOptions).sort((a, b) => a - b));
-    } else if (product.unit === 'kg') {
-      // For kg products: 0.5kg, 1kg, 1.5kg, 2kg, 2.5kg, 3kg, 4kg, 5kg
-      for (let i = 0.5; i <= 5; i += 0.5) {
-        options.push(i);
-      }
+    } else {
+      // For weight-based products: 100g, 250g, 500g, 750g, 1kg, 1.5kg, 2kg, 2.5kg, 3kg, 4kg, 5kg
+      const weightOptions = [100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000, 4000, 5000];
+      options.push(...weightOptions);
     }
     
     return options;
@@ -71,12 +54,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const weightOptions = getWeightOptions();
 
   const formatWeight = (weight: number) => {
-    if (product.unit === 'kg') {
-      return weight % 1 === 0 ? `${weight}kg` : `${weight}kg`;
-    } else if (product.unit === 'g') {
-      return weight >= 1000 ? `${weight/1000}kg` : `${weight}g`;
-    } else {
+    if (product.unit === 'piece') {
       return `${weight} ${weight === 1 ? 'piece' : 'pieces'}`;
+    } else {
+      // For weight-based products, show in grams or kg
+      return weight >= 1000 ? `${weight/1000}kg` : `${weight}g`;
     }
   };
 
